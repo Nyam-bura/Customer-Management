@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Customer
+from .models import Customer,Business
 from rest_framework import generics
 from customer.serializer import CustomerSerializer
 from rest_framework.response import Response
@@ -47,11 +47,40 @@ def customer_details(request, id):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     elif request.method == 'DELETE':
         customer_instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
     # venye naeza create business and attach the customer
+class BusinessListCreateView(generics.ListCreateAPIView):
+    def create_business_with_customer(request):
+        customer_data = {
+            "customer_name": "Gumato Roba",
+            "contact_phone": "0790500842",
+            "contact_email": "gumato@gmail.com",
+            "date_of_birth": "2000-01-01",
+            "nationality": "Kenyan"
+    }
 
+        business_data = {
+            "business_name": "Hair Dressing",
+            "business_category_id": 1,  
+            "business_registration_date": "2023-01-01",
+            "county": 'Nairobi',  
+            "building_name": "KICC",
+            "sub_county": "Westlands",
+            "ward": "Spring Valley",
+            "floor": "3rd floor"
+    }
+
+    # # Create the customer instance
+    customer_data= Customer.objects.all()
+    # customer_instance = Customer.objects.create(**customer_data)
+
+    # # Update business data to include the associated customer
+    business_data=Business.objects.all()
+    # business_data["customer_id"] = customer_instance.id
+
+    # # Create the business instance
+    # business_instance = Business.objects.create(**business_data)

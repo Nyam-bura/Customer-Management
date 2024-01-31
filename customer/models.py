@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 from model_utils import Choices
 from django.utils import timezone
 
+
 COUNTY_CHOICES = Choices(
     (1, 'NAIROBI', _('NAIROBI')),
     (2, 'MOMBASA', _('MOMBASA')),
@@ -64,7 +65,7 @@ NATIONALITY_CHOICES = (
 class Customer(models.Model):
     customer_name = models.CharField(_('customer_name'),max_length=100)
     contact_phone = models.CharField(_('contact_phone'),max_length=20)
-    contact_email = models.EmailField(_('contact_email'))
+    contact_email = models.EmailField(_('contact_email'),unique=True)
     date_of_birth = models.DateField(_('date_of_birth'))
     nationality=models.CharField(_('nationality'),choices=NATIONALITY_CHOICES,max_length=50,null=True)
 
@@ -80,9 +81,6 @@ class Business(models.Model):
     ward = models.CharField(max_length=100, choices=WARD_CHOICES,null=True)
     floor = models.CharField(max_length=100, choices=FLOOR_CHOICES,null=True)
 
-
-
-
     @property
     def age_of_business(self):
         today = timezone.now().date()
@@ -92,7 +90,6 @@ class Business(models.Model):
     
     def __str__(self):
         return f'{self.business_name}'
-
 
 
 class BusinessCategories(models.Model):

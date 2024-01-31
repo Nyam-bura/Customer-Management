@@ -10,5 +10,4 @@ app_name = 'customer'
 urlpatterns=[
     path('customer/', CustomerListCreateView.as_view(queryset=Customer.objects.all(), serializer_class=CustomerSerializer), name='user-list'),
     path('customer/<int:id>/',views.customer_details)
-
 ]
