@@ -6,7 +6,7 @@ class CustomerSerializer(serializers.ModelSerializer):
         model =Customer
         fields = '__all__'
 
-class BusinessSerialize(serializers.ModelSerializer):
+class BusinessSerializer(serializers.ModelSerializer):
     class Meta:
         model =Business
         fields = '__all__'

@@ -3,7 +3,7 @@ from customer.models import Customer,Business,BusinessCategories
 
 class CustomerAdmin(admin.ModelAdmin):
     model = Customer
-    list_display = ['customer_name','contact_phone','contact_email','date_of_birth','nationality']
+    list_display = ['customer_name','id_number','contact_phone','contact_email','date_of_birth','nationality']
 admin.site.register(Customer, CustomerAdmin)
 
 class BusinessAdmin(admin.ModelAdmin):

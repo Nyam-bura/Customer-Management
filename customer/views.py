@@ -1,13 +1,11 @@
 from django.shortcuts import render
 from .models import Customer,Business
 from rest_framework import generics
-from customer.serializer import CustomerSerializer
+from customer.serializer import CustomerSerializer, BusinessSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-
-
-
+from django.shortcuts import get_object_or_404
 
 class CustomerListCreateView(generics.ListCreateAPIView):
     queryset = Customer.objects.all()
@@ -54,33 +52,52 @@ def customer_details(request, id):
 
     # venye naeza create business and attach the customer
 class BusinessListCreateView(generics.ListCreateAPIView):
-    def create_business_with_customer(request):
-        customer_data = {
-            "customer_name": "Gumato Roba",
-            "contact_phone": "0790500842",
-            "contact_email": "gumato@gmail.com",
-            "date_of_birth": "2000-01-01",
-            "nationality": "Kenyan"
-    }
+    queryset = Business.objects.all()
+    serializer_class = BusinessSerializer
 
-        business_data = {
-            "business_name": "Hair Dressing",
-            "business_category_id": 1,  
-            "business_registration_date": "2023-01-01",
-            "county": 'Nairobi',  
-            "building_name": "KICC",
-            "sub_county": "Westlands",
-            "ward": "Spring Valley",
-            "floor": "3rd floor"
-    }
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = BusinessSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def create(self,request,*args,**kwargs):
+        id_number = request.data.get('id_number')
+        customer = get_object_or_404(Customer,id_number=id_number)
+        request.data["customer"]=customer.id
+        serializer = self.get_serializer(data = request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
-    # # Create the customer instance
-    customer_data= Customer.objects.all()
-    # customer_instance = Customer.objects.create(**customer_data)
+@api_view(['POST', 'PUT','PATCH', 'DELETE'])
+def business_details(request, id):
+    try:
+        business_instance = Customer.objects.get(pk=id)
+    except Customer.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-    # # Update business data to include the associated customer
-    business_data=Business.objects.all()
-    # business_data["customer_id"] = customer_instance.id
+    if request.method == 'GET':
+        serializer = CustomerSerializer(business_instance)
+        return Response(serializer.data)
 
-    # # Create the business instance
-    # business_instance = Business.objects.create(**business_data)
+    elif request.method == 'PUT':
+        # Implement logic for updating the drink instance with request data
+        serializer = CustomerSerializer(business_instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'PATCH':
+        # Implement logic for partially updating the drink instance with request data
+        serializer = CustomerSerializer(business_instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        business_instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    # if the customer has businesses
