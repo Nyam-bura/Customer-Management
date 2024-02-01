@@ -27,7 +27,7 @@ MODE = 'DEV'
 class CustomOpenAPISchemaGenerator(OpenAPISchemaGenerator):
     def get_schema(self, *args, **kwargs):
         schema = super().get_schema(*args, **kwargs)
-        schema.basePath = '/api/'
+        schema.basePath = '/customer/'
         return schema
 GENERATOR_CLASS = CustomOpenAPISchemaGenerator
 

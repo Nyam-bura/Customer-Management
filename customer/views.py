@@ -30,7 +30,6 @@ def customer_details(request, id):
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        # Implement logic for updating the drink instance with request data
         serializer = CustomerSerializer(customer_instance, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -38,7 +37,6 @@ def customer_details(request, id):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     elif request.method == 'PATCH':
-        # Implement logic for partially updating the drink instance with request data
         serializer = CustomerSerializer(customer_instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -50,7 +48,6 @@ def customer_details(request, id):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
-    # venye naeza create business and attach the customer
 class BusinessListCreateView(generics.ListCreateAPIView):
     queryset = Business.objects.all()
     serializer_class = BusinessSerializer
@@ -69,28 +66,26 @@ class BusinessListCreateView(generics.ListCreateAPIView):
         serializer.save()
         return Response(serializer.data)
 
-@api_view(['POST', 'PUT','PATCH', 'DELETE'])
+@api_view(['GET', 'PUT','PATCH', 'DELETE'])
 def business_details(request, id):
     try:
-        business_instance = Customer.objects.get(pk=id)
-    except Customer.DoesNotExist:
+        business_instance = Business.objects.get(pk=id)
+    except Business.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = CustomerSerializer(business_instance)
+        serializer = BusinessSerializer(business_instance)
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        # Implement logic for updating the drink instance with request data
-        serializer = CustomerSerializer(business_instance, data=request.data)
+        serializer = BusinessSerializer(business_instance, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     elif request.method == 'PATCH':
-        # Implement logic for partially updating the drink instance with request data
-        serializer = CustomerSerializer(business_instance, data=request.data, partial=True)
+        serializer = BusinessSerializer(business_instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

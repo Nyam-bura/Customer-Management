@@ -16,7 +16,6 @@ class BusinessAdmin(admin.ModelAdmin):
 
 admin.site.register(Business,BusinessAdmin)
 
-
 class BusinessCategoriesAdmin(admin.ModelAdmin):
     model = BusinessCategories
     list_display = ['id','title']
