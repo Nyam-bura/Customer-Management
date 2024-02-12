@@ -1,5 +1,5 @@
 from django.contrib import admin
-from customer.models import Customer,Business,BusinessCategories
+from customer.models import Customer,Business,County,SubCounty,Ward,BusinessCategories
 
 class CustomerAdmin(admin.ModelAdmin):
     model = Customer
@@ -15,6 +15,22 @@ class BusinessAdmin(admin.ModelAdmin):
     age_of_business.short_description='Age'
 
 admin.site.register(Business,BusinessAdmin)
+
+class CountyAdmin(admin.ModelAdmin):
+    model = County
+    list_display = ['id','county_name']
+admin.site.register(County,CountyAdmin)
+
+class SubCountyAdmin(admin.ModelAdmin):
+    model = SubCounty
+    list_display = ['id','subcounty_name']
+admin.site.register(SubCounty,SubCountyAdmin)
+
+
+class WardAdmin(admin.ModelAdmin):
+    model = Ward
+    list_display = ['id','ward_name']
+admin.site.register(Ward,WardAdmin)
 
 class BusinessCategoriesAdmin(admin.ModelAdmin):
     model = BusinessCategories

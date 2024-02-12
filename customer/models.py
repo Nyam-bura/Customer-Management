@@ -1,26 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext as _
-from model_utils import Choices
 from django.utils import timezone
-
-COUNTY_CHOICES = Choices(
-    (1, 'NAIROBI', _('NAIROBI')),
-    (2, 'MOMBASA', _('MOMBASA')),
-)
-
-SUB_COUNTY_CHOICES = (
-    (1, 'WESTLANDS', _('WESTLANDS')),
-    (2, 'LIKONI', _('LIKONI'))
-)
-WARD_CHOICES = (
-    (1, 'MAKONGENI', _('MAKONGENI')),
-    (2, 'MTONGWE', _('MTONGWE'))
-)
-
-BUSINESSCATEGORIES_CHOICES = Choices(
-    (1, 'SMALL SCALE', _('SMALL SCALE')),
-    (2, 'LARGE SCALE', _('LARGE SCALE')),
-)
 
 NATIONALITY_CHOICES = (
     ("kenyan", "kenyan"),
@@ -39,13 +19,13 @@ class Customer(models.Model):
 
 class Business(models.Model):
     business_name =models.CharField(_('business_name'), max_length=100)
-    business_category = models.PositiveSmallIntegerField('business_category',choices=BUSINESSCATEGORIES_CHOICES)  
+    business_category = models.PositiveSmallIntegerField('business_category')  
     business_registration_date =models.DateField(_('business_registration'))
-    county = models.CharField(_('county'),max_length=100,null=True)
-    customer = models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
+    county = models.ForeignKey('County', on_delete=models.CASCADE, null=True, related_name='businesses')
+    customer = models.ForeignKey(Customer, default=1, verbose_name="customer", on_delete=models.SET_DEFAULT)
     building_name = models.CharField(max_length=100,null=True)
-    sub_county = models.CharField(_('sub_county'),max_length=100,null=True)
-    ward = models.CharField(_('ward'),max_length=50,null=True)
+    sub_county = models.ForeignKey(_('SubCounty'),on_delete=models.CASCADE,null=True)
+    ward = models.ForeignKey(_('Ward'),on_delete=models.CASCADE,null=True)
     floor = models.PositiveSmallIntegerField(null=True)
 
     @property
@@ -57,6 +37,25 @@ class Business(models.Model):
     
     def __str__(self):
         return f'{self.business_name}'
+    
+class County(models.Model):
+    id = models.AutoField(_('id'),primary_key=True)
+    county_name = models.CharField(_('name'),max_length=100)  
+
+class SubCounty(models.Model):
+    id = models.AutoField(_('id'),primary_key=True)
+    subcounty_name = models.CharField(_('name'),max_length=100) 
+
+    def __str__(self):
+        return self.subcounty_name
+    
+class Ward(models.Model):
+    id = models.AutoField(_('id'),primary_key=True)
+    ward_name= models.CharField(_('name'),max_length=100) 
+
+    def __str__(self):
+        return self.ward_name
+
 
 class BusinessCategories(models.Model):
     id = models.AutoField(_('id'),primary_key=True)
