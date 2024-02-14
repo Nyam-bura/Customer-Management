@@ -1,14 +1,13 @@
-from django.shortcuts import render
 from .models import Customer,Business
 from customer.serializer import CustomerSerializer, BusinessSerializer
-from rest_framework.views import APIView
 from rest_framework import generics
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 
-class CustomerListCreateView(generics.ListCreateAPIView,APIView):
+class CustomerListCreateView(generics.ListCreateAPIView, APIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
 
@@ -18,10 +17,7 @@ class CustomerListCreateView(generics.ListCreateAPIView,APIView):
         return Response(serializer.data)
     
 
-
 @api_view(['GET', 'PUT','PATCH', 'DELETE'])
-# class CustomerDetailView(APIView):
-
 def customer_details(request, id):
     try:
         customer_instance = Customer.objects.get(pk=id)

@@ -2,12 +2,13 @@ from django.db import models
 from django.utils.translation import gettext as _
 from django.utils import timezone
 
-NATIONALITY_CHOICES = (
-    ("kenyan", "kenyan"),
-    ("ugandan", "ugandan"),
-    ("tanzanian", "tanzanian"),
-    ("rwandees", "rwandees")
-)
+
+NATIONALITY_CHOICES = [
+    ("kenyan", "Kenyan"),
+    ("ugandan", "Ugandan"),
+    ("tanzanian", "Tanzanian"),
+    ("rwandese", "Rwandese")
+]
 
 class Customer(models.Model):
     customer_name = models.CharField(_('customer_name'),max_length=100)
