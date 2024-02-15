@@ -1,8 +1,9 @@
-from .models import Customer,Business
-from customer.serializer import CustomerSerializer, BusinessSerializer
+from .models import BusinessCategories, Customer,Business
+from customer.serializer import CustomerSerializer, BusinessSerializer,BusinesscategorySerializer
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
@@ -76,15 +77,8 @@ def business_details(request, id):
         serializer = BusinessSerializer(business_instance)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
+    elif request.method in ['PUT','PATCH']:
         serializer = BusinessSerializer(business_instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    elif request.method == 'PATCH':
-        serializer = BusinessSerializer(business_instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -94,3 +88,32 @@ def business_details(request, id):
         business_instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+
+class BusinessCategoryList(generics.ListCreateAPIView):
+    queryset = BusinessCategories.objects.all()
+    serializer_class = BusinesscategorySerializer
+    permission_classes = [IsAdminUser]
+
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+def businesscategory_details(request, id):
+    try:
+        business_instance = BusinessCategories.objects.get(pk=id)
+    except BusinessCategories.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = BusinesscategorySerializer(business_instance)
+        return Response(serializer.data)
+
+    elif request.method in ['PUT', 'PATCH']:
+        serializer = BusinesscategorySerializer(business_instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        business_instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+   
