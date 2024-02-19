@@ -16,14 +16,14 @@ class Customer(models.Model):
     contact_phone = models.CharField(_('contact_phone'),max_length=20)
     contact_email = models.EmailField(_('contact_email'),unique=True)
     date_of_birth = models.DateField(_('date_of_birth'))
-    nationality=models.CharField(_('nationality'),choices=NATIONALITY_CHOICES,max_length=50,null=True)  
+    nationality=models.CharField(_('nationality'),choices=NATIONALITY_CHOICES,max_length=50,null=True)
 
 class Business(models.Model):
     business_name =models.CharField(_('business_name'), max_length=100)
     business_category = models.PositiveSmallIntegerField('business_category')  
     business_registration_date =models.DateField(_('business_registration'))
     county = models.ForeignKey('County', on_delete=models.CASCADE, null=True, related_name='businesses')
-    customer = models.ForeignKey(Customer, default=1, verbose_name="customer", on_delete=models.SET_DEFAULT)  
+    customer = models.ForeignKey(Customer, default=1, verbose_name="customer", on_delete=models.SET_DEFAULT)
     building_name = models.CharField(max_length=100,null=True)
     sub_county = models.ForeignKey(_('SubCounty'),on_delete=models.CASCADE,null=True)
     ward = models.ForeignKey(_('Ward'),on_delete=models.CASCADE,null=True)
@@ -60,8 +60,4 @@ class Ward(models.Model):
 
 class BusinessCategories(models.Model):
     id = models.AutoField(_('id'),primary_key=True)
-    title = models.CharField(_('title'),max_length=100)  
-
-
-
-    
+    title = models.CharField(_('title'),max_length=100)
