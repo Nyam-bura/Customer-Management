@@ -2,6 +2,7 @@ from .models import BusinessCategories, Customer,Business
 from customer.serializer import CustomerSerializer, BusinessSerializer,BusinesscategorySerializer
 from rest_framework import generics
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from rest_framework import status
@@ -12,11 +13,13 @@ class CustomerListCreateView(generics.ListCreateAPIView, APIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
 
+
     def list(self, request):
         queryset = self.get_queryset()
         serializer = CustomerSerializer(queryset, many=True)
         return Response(serializer.data)
     
+
 
 @api_view(['GET', 'PUT','PATCH', 'DELETE'])
 def customer_details(request, id):
@@ -48,6 +51,8 @@ def customer_details(request, id):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
+    
+
 class BusinessListCreateView(generics.ListCreateAPIView):
     queryset = Business.objects.all()
     serializer_class = BusinessSerializer
@@ -57,6 +62,7 @@ class BusinessListCreateView(generics.ListCreateAPIView):
         serializer = BusinessSerializer(queryset, many=True)
         return Response(serializer.data)
     
+
     def create(self,request,*args,**kwargs):
         id_number = request.data.get('id_number')
         customer = get_object_or_404(Customer,id_number=id_number)

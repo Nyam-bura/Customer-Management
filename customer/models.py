@@ -9,6 +9,7 @@ NATIONALITY_CHOICES = [
     ("tanzanian", "Tanzanian"),
     ("rwandese", "Rwandese")
 ]
+# unsaishi ajy vibasic ni kama kesho haiko promised 
 
 class Customer(models.Model):
     customer_name = models.CharField(_('customer_name'),max_length=100)
@@ -29,6 +30,9 @@ class Business(models.Model):
     ward = models.ForeignKey(_('Ward'),on_delete=models.CASCADE,null=True)
     floor = models.PositiveSmallIntegerField(null=True)
 
+
+
+
     @property
     def age_of_business(self):
         today = timezone.now().date()
@@ -41,7 +45,7 @@ class Business(models.Model):
     
 class County(models.Model):
     id = models.AutoField(_('id'),primary_key=True)
-    county_name = models.CharField(_('name'),max_length=100)  
+    county_name = models.CharField(_('name'),max_length=100)
 
 class SubCounty(models.Model):
     id = models.AutoField(_('id'),primary_key=True)
@@ -52,7 +56,7 @@ class SubCounty(models.Model):
     
 class Ward(models.Model):
     id = models.AutoField(_('id'),primary_key=True)
-    ward_name= models.CharField(_('name'),max_length=100) 
+    ward_name= models.CharField(_('name'),max_length=100)  
 
     def __str__(self):
         return self.ward_name
