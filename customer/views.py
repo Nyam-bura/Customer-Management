@@ -1,16 +1,18 @@
-from django.shortcuts import render
-from .models import Customer,Business
-from customer.serializer import CustomerSerializer, BusinessSerializer
-from rest_framework.views import APIView
+from .models import BusinessCategories, Customer,Business
+from customer.serializer import CustomerSerializer, BusinessSerializer,BusinesscategorySerializer
 from rest_framework import generics
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 
-class CustomerListCreateView(generics.ListCreateAPIView,APIView):
+class CustomerListCreateView(generics.ListCreateAPIView, APIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+
 
     def list(self, request):
         queryset = self.get_queryset()
@@ -20,8 +22,6 @@ class CustomerListCreateView(generics.ListCreateAPIView,APIView):
 
 
 @api_view(['GET', 'PUT','PATCH', 'DELETE'])
-# class CustomerDetailView(APIView):
-
 def customer_details(request, id):
     try:
         customer_instance = Customer.objects.get(pk=id)
@@ -51,6 +51,8 @@ def customer_details(request, id):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
+    
+
 class BusinessListCreateView(generics.ListCreateAPIView):
     queryset = Business.objects.all()
     serializer_class = BusinessSerializer
@@ -60,6 +62,7 @@ class BusinessListCreateView(generics.ListCreateAPIView):
         serializer = BusinessSerializer(queryset, many=True)
         return Response(serializer.data)
     
+
     def create(self,request,*args,**kwargs):
         id_number = request.data.get('id_number')
         customer = get_object_or_404(Customer,id_number=id_number)
@@ -80,15 +83,8 @@ def business_details(request, id):
         serializer = BusinessSerializer(business_instance)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
+    elif request.method in ['PUT','PATCH']:
         serializer = BusinessSerializer(business_instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    elif request.method == 'PATCH':
-        serializer = BusinessSerializer(business_instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -98,3 +94,32 @@ def business_details(request, id):
         business_instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+
+class BusinessCategoryList(generics.ListCreateAPIView):
+    queryset = BusinessCategories.objects.all()
+    serializer_class = BusinesscategorySerializer
+    permission_classes = [IsAdminUser]
+
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+def businesscategory_details(request, id):
+    try:
+        business_instance = BusinessCategories.objects.get(pk=id)
+    except BusinessCategories.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = BusinesscategorySerializer(business_instance)
+        return Response(serializer.data)
+
+    elif request.method in ['PUT', 'PATCH']:
+        serializer = BusinesscategorySerializer(business_instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        business_instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+   
